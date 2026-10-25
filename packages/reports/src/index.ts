@@ -66,6 +66,8 @@ export function toSanitizedCapability(capability: CapabilityRecord): SanitizedCa
 
 export interface RenderOptions {
   maxRowsPerEnvironment?: number;
+  /** home root hint used in the legend; honored before falling back to the OS home. */
+  homeRoot?: string;
 }
 
 const VERIFICATION_LEGEND = [
@@ -76,7 +78,7 @@ const VERIFICATION_LEGEND = [
 export function renderAuditMarkdown(audit: AuditResult, options: RenderOptions = {}): string {
   const maxRows = options.maxRowsPerEnvironment ?? 100;
   const lines: string[] = [];
-  const homeRoot = sanitizeHomeRootFromPathHint();
+  const homeRoot = options.homeRoot ? sanitizePath(options.homeRoot, [options.homeRoot]).replace(/\/+$/, '') || '~' : sanitizeHomeRootFromPathHint();
   lines.push(`# CSN Capability Audit`, '');
   lines.push(`Generated: ${audit.generatedAt} · wall time: ${audit.wallTimeMs}ms · capabilities: ${audit.summary.capabilities}`, '');
   lines.push(VERIFICATION_LEGEND, '');

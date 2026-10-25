@@ -71,8 +71,9 @@ describe('intake', () => {
   });
 
   it('submissionHash is stable and not empty', () => {
-    expect(submissionHash(reportFixture())).toBe(submissionHash(reportFixture()));
-    expect(submissionHash(reportFixture()).length).toBe(24);
+    const payload = reportFixture();
+    expect(submissionHash(payload)).toBe(submissionHash(payload));
+    expect(submissionHash(payload).length).toBe(24);
   });
 });
 
