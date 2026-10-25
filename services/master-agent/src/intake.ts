@@ -64,6 +64,10 @@ export function submissionHash(payload: unknown): string {
   return createHash('sha256').update(JSON.stringify(payload)).digest('hex').slice(0, 24);
 }
 
+/** Token-shaped secret patterns (valueless detection — the engine never needs the secret itself). */
+const SECRET_SHAPE_RE =
+  /gh[pousr]_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9_-]{16,}|sk_[A-Za-z0-9_-]{16,}|AKIA[0-9A-Z]{16}|Bearer\s+[A-Za-z0-9._\-]{12,}|xox[abpsr]-[A-Za-z0-9-]{10,}|eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/i;
+
 function candidateSlug(capability: SanitizedCapability): string {
   return createHash('sha256')
     .update(`${capability.name.toLowerCase()}::${capability.category}`)
@@ -96,9 +100,10 @@ export function intake(envelope: SubmissionEnvelope, existing: readonly Candidat
   let deduplicated = 0;
 
   for (const capability of report.capabilities) {
-    // aggressive content checks: name/description must not carry secret-shaped content
-    if (/gh[pousr]_|sk-ant?-|AKIA|Bearer\s+[A-Za-z0-9]/i.test(`${capability.name} ${capability.description ?? ''}`)) {
-      rejected.push(`capability '${capability.name}': secret-shaped content in name/description`);
+    // aggressive content checks: name/description/notes must not carry secret-shaped content
+    const scanTarget = `${capability.name} ${capability.description ?? ''} ${capability.securityNotes.join(' ')}`;
+    if (SECRET_SHAPE_RE.test(scanTarget)) {
+      rejected.push(`capability '${capability.name}': secret-shaped content in name/description/notes`);
       issues.push('intake refused capability with secret-shaped content');
       continue;
     }
@@ -132,9 +137,9 @@ export function compareWithLocal(
   capability: SanitizedCapability,
   local: readonly { name: string; category: string; description?: string; id?: string }[],
 ): { localStatus: 'equivalent-exists' | 'complement' | 'gap'; rationale: string } {
-  const wanted = capability.name.toLowerCase().trim();
+  const wanted = capability.name.toLowerCase().trim().replace(/[-_]+/g, ' ');
   for (const record of local) {
-    const have = record.name.toLowerCase().trim();
+    const have = record.name.toLowerCase().trim().replace(/[-_]+/g, ' ');
     if (have === wanted) return { localStatus: 'equivalent-exists', rationale: `exact local equivalent exists: ${record.id ?? record.name}` };
     const shared = capability.description && record.description
       ? capability.description.toLowerCase().split(/\W+/).filter((w) => w.length > 4 && record.description?.toLowerCase().includes(w))

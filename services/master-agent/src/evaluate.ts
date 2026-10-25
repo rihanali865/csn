@@ -85,22 +85,30 @@ export function evaluateCandidate(candidate: Candidate, context: EvaluationConte
 }
 
 function advanceStatusChain(candidate: Candidate, suggested: CandidateStatus): void {
-  const current = candidate.status;
   const pushHistory = (from: CandidateStatus | undefined, to: CandidateStatus, actor: 'scoring', reason: string) => {
     candidate.history.push({ at: new Date().toISOString(), from, to, actor, reason });
   };
 
-  if (current === suggested) return;
-  if (current === 'reported') {
-    pushHistory(current, 'research-pending', 'scoring', 'evaluation pipeline: moving new report to research-pending');
-    candidate.status = 'research-pending';
+  if (candidate.status === suggested) return;
+
+  // Hard gate rejections advance the shortest legal path; everything else
+  // advances at most ONE hop per evaluation so research is never skipped.
+  if (suggested === 'rejected') {
+    if (legalTransitionOrThrow(candidate.status, 'rejected')) {
+      pushHistory(candidate.status, 'rejected', 'scoring', `blocked by gates (total ${candidate.scoreSummary?.total})`);
+      candidate.status = 'rejected';
+      return;
+    }
   }
 
-  const afterFirst = candidate.status;
-  if (afterFirst === suggested) return;
+  if (candidate.status === 'reported') {
+    pushHistory('reported', 'research-pending', 'scoring', 'evaluation pipeline: research before any deeper status change');
+    candidate.status = 'research-pending';
+    return;
+  }
 
-  if (legalTransitionOrThrow(afterFirst, suggested)) {
-    pushHistory(afterFirst, suggested, 'scoring', `suggested by explainable scoring (total ${candidate.scoreSummary?.total}${gatesSuffix(candidate)})`);
+  if (legalTransitionOrThrow(candidate.status, suggested)) {
+    pushHistory(candidate.status, suggested, 'scoring', `suggested by explainable scoring (total ${candidate.scoreSummary?.total}${gatesSuffix(candidate)})`);
     candidate.status = suggested;
   }
 }
