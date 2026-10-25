@@ -11,6 +11,8 @@ export default defineConfig({
       '@csn/compatibility': path.resolve(__dirname, 'packages/compatibility/src/index.ts'),
       '@csn/policy': path.resolve(__dirname, 'packages/policy/src/index.ts'),
       '@csn/reports': path.resolve(__dirname, 'packages/reports/src/index.ts'),
+      '@csn/api': path.resolve(__dirname, 'services/api/src/index.ts'),
+      '@csn/master-agent': path.resolve(__dirname, 'services/master-agent/src/index.ts'),
     },
   },
   test: {

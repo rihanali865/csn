@@ -22,7 +22,9 @@
       "@csn/discovery": ["packages/discovery/src/index.ts"],
       "@csn/compatibility": ["packages/compatibility/src/index.ts"],
       "@csn/policy": ["packages/policy/src/index.ts"],
-      "@csn/reports": ["packages/reports/src/index.ts"]
+      "@csn/reports": ["packages/reports/src/index.ts"],
+      "@csn/api": ["services/api/src/index.ts"],
+      "@csn/master-agent": ["services/master-agent/src/index.ts"]
     }
   },
   "include": [
