@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterAll } from 'vitest';
 import * as http from 'node:http';
+import * as os from 'node:os';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { runCli, type CliIO } from '../src/index.js';
@@ -47,13 +48,28 @@ describe('csn cli', () => {
     expect(flattened).not.toMatch(/\bsk-[a-z0-9_-]{16,}/);
   });
 
+  it('audit --home consumes its value (never silently falls back to the real machine)', async () => {
+    const { io, capture } = captureIO();
+    const fakeHome = path.join(os.tmpdir(), `csn-parser-check-${process.pid}`);
+    // Old parser bug: `--home <value>` was read as a boolean and `<value>` became
+    // positional, so the audit ran against the REAL home. On a machine with an
+    // installed environment this test would wrongly detect it. With the value
+    // consumed, an empty fake home must yield no detection at all.
+    const code = await runCli(['audit', '--json', '--home', fakeHome, '--only', 'opencode'], io);
+    expect(code).toBe(0);
+    const audit = JSON.parse(capture.out.join('\n')) as { environments: Array<{ adapterId: string; detected: boolean }> };
+    const oc = audit.environments.find((e) => e.adapterId === 'opencode');
+    expect(oc?.detected).toBe(false);
+  });
+
   it('audit markdown is honest about not-detected environments and shows the policy', async () => {
     const { io, capture } = captureIO();
-    const code = await runCli(['audit', '--home', fixtureHome, '--only', 'opencode'], io);
+    const fakeHome = path.join(os.tmpdir(), `csn-parser-check-${process.pid}-md`);
+    const code = await runCli(['audit', '--home', fakeHome], io);
     expect(code).toBe(0);
     const text = capture.out.join('\n');
     expect(text).toContain('# CSN Capability Audit');
-    expect(text).toContain('(not detected)'); // claude-code/codex/cursor skipped from this run are reflected further down
+    expect(text).toContain('(not detected)'); // every environment states its absence honestly
     expect(text).toContain('sharing: disabled');
     expect(text).toContain('nothing ran automatically');
   });

@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import * as os from 'node:os';
 import { buildSubmissionPayload, renderAuditMarkdown, renderGapMarkdown, renderSubmissionPreview, toSanitizedCapability } from '../src/index.js';
 import type { AuditResult, EnvironmentAudit, CapabilityRecord } from '@csn/core';
 import { buildGapReport, backlogProfile } from '@csn/discovery';
@@ -43,7 +44,8 @@ describe('submission payload building', () => {
     const payload = buildSubmissionPayload(audit(), { adapterVersion: '0.1.0' });
     const serialized = JSON.stringify(payload);
     expect(serialized).not.toContain('sourcePath');
-    expect(serialized).not.toContain(process.env.USERPROFILE ?? '');
+    // WORKS on every OS: homedir() is stable; process.env.USERPROFILE is not.
+    expect(serialized).not.toContain(os.homedir());
     expect(payload.capabilities).toHaveLength(2);
     expect(payload.capabilities[0].verification).toBe('configured');
   });

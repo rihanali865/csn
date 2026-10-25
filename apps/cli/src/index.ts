@@ -24,15 +24,25 @@ interface Args {
   positional: string[];
 }
 
+const VALUE_FLAGS = new Set(['home', 'only', 'max', 'note', 'endpoint', 'strict-path']);
+
+/**
+ * Parses CLI argv. Flags with values accept both `--flag value` (next token,
+ * consumed) and `--flag=value`; boolean flags take no value. Value flags only
+ * swallow the next token when that token is not itself a flag.
+ */
 function parse(argv: string[]): Args {
   const flags: Record<string, string | boolean> = {};
   const positional: string[] = [];
-  for (const raw of argv) {
+  for (let i = 0; i < argv.length; i++) {
+    const raw = argv[i];
     if (raw.startsWith('--')) {
       const body = raw.slice(2);
       const eq = body.indexOf('=');
       if (eq >= 0) {
         flags[body.slice(0, eq)] = body.slice(eq + 1);
+      } else if (VALUE_FLAGS.has(body) && i + 1 < argv.length && !argv[i + 1].startsWith('--')) {
+        flags[body] = argv[++i];
       } else {
         flags[body] = true;
       }
