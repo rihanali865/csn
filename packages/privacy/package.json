@@ -1,0 +1,13 @@
+{
+  "name": "@csn/privacy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Secret redaction, secret-file exclusion and data-minimized project summaries for Capability Swarm Network.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@csn/core": "*"
+  }
+}

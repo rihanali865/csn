@@ -1,0 +1,23 @@
+{
+  "name": "@csn/cli",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CSN command line interface: audit, report, policy, submit and dashboard.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "bin": {
+    "csn": "./src/index.ts"
+  },
+  "dependencies": {
+    "@csn/core": "*",
+    "@csn/adapters": "*",
+    "@csn/discovery": "*",
+    "@csn/policy": "*",
+    "@csn/privacy": "*",
+    "@csn/reports": "*",
+    "@csn/api": "*",
+    "@csn/master-agent": "*"
+  }
+}

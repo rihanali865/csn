@@ -1,0 +1,15 @@
+{
+  "name": "@csn/api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Network API: authenticated, revocable installation identities, report intake, task delivery.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./server": "./src/server.ts"
+  },
+  "dependencies": {
+    "@csn/core": "*",
+    "express": "^4.21.2"
+  }
+}

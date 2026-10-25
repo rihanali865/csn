@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "node",
+      "args": ["./fs_server.js"]
+    },
+    "wiki-lookup": {
+      "url": "https://mcp.example.invalid/wiki"
+    }
+  }
+}

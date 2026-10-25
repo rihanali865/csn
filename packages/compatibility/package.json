@@ -1,0 +1,13 @@
+{
+  "name": "@csn/compatibility",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Manifest validation, duplicate/conflict detection and dependency checks for AI-environment integrations.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@csn/core": "*"
+  }
+}

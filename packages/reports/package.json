@@ -1,0 +1,13 @@
+{
+  "name": "@csn/reports",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Audit/gap report rendering and sanitized submission payload builders for Capability Swarm Network.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@csn/core": "*"
+  }
+}

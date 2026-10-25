@@ -1,0 +1,18 @@
+node_modules/
+coverage/
+*.tsbuildinfo
+.DS_Store
+Thumbs.db
+
+# local runtime artifacts (never commit machine data)
+csn-data/
+csn-reports/
+*.local.json
+!packages/policy/src/default-policy.json
+
+# secrets — never commit
+.env
+.env.*
+*.pem
+*.key
+*_token.txt

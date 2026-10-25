@@ -1,0 +1,17 @@
+{
+  "name": "@csn/master-agent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Private Master Agent: intake, comparison, research-verification helpers, isolated validation and integration candidacy.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./cli": "./src/cli.ts"
+  },
+  "dependencies": {
+    "@csn/core": "*",
+    "@csn/policy": "*",
+    "@csn/privacy": "*",
+    "@csn/discovery": "*"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@csn/adapters",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Verified read-only environment adapters (OpenCode, Claude Code, Codex, Cursor) for Capability Swarm Network.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@csn/core": "*",
+    "@csn/privacy": "*"
+  }
+}

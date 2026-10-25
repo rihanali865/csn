@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": ["Bash(npm run test *)"],
+    "deny": ["Read(./.env)"]
+  },
+  "enabledPlugins": {
+    "marketplace-plugin@1.2": true
+  }
+}

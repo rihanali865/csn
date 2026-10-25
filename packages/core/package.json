@@ -1,0 +1,13 @@
+{
+  "name": "@csn/core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared capability models, network schemas, gap comparison and explainable scoring for Capability Swarm Network.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "zod": "^3.24.1"
+  }
+}

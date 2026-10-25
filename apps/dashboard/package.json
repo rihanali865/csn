@@ -1,0 +1,18 @@
+{
+  "name": "@csn/dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local dashboard: capability inventory, audits on demand, policy transparency (runs only when the user asks).",
+  "type": "module",
+  "exports": {
+    ".": "./src/server.ts"
+  },
+  "dependencies": {
+    "@csn/core": "*",
+    "@csn/adapters": "*",
+    "@csn/discovery": "*",
+    "@csn/policy": "*",
+    "@csn/privacy": "*",
+    "@csn/reports": "*"
+  }
+}

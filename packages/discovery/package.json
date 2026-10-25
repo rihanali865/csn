@@ -1,0 +1,15 @@
+{
+  "name": "@csn/discovery",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Capability audit engine, deterministic classification and gap reporting for Capability Swarm Network.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@csn/core": "*",
+    "@csn/adapters": "*",
+    "@csn/privacy": "*"
+  }
+}

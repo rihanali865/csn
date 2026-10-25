@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["node"],
+    "strict": true,
+    "noUncheckedIndexedAccess": false,
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": false,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@csn/core": ["packages/core/src/index.ts"],
+      "@csn/privacy": ["packages/privacy/src/index.ts"],
+      "@csn/adapters": ["packages/adapters/src/index.ts"],
+      "@csn/discovery": ["packages/discovery/src/index.ts"],
+      "@csn/compatibility": ["packages/compatibility/src/index.ts"],
+      "@csn/policy": ["packages/policy/src/index.ts"],
+      "@csn/reports": ["packages/reports/src/index.ts"]
+    }
+  },
+  "include": [
+    "packages/*/src/**/*.ts",
+    "packages/*/test/**/*.ts",
+    "services/*/src/**/*.ts",
+    "services/*/test/**/*.ts",
+    "apps/*/src/**/*.ts",
+    "apps/*/test/**/*.ts",
+    "tests/**/*.ts",
+    "vitest.config.ts"
+  ],
+  "exclude": ["node_modules", "dist", ".git"]
+}

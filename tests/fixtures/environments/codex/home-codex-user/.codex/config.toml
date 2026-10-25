@@ -1,0 +1,13 @@
+# codex fixture config
+model = "gpt-5.2"
+approval_policy = "on-request"
+
+[mcp_servers.files]
+command = ["node", "./files_mcp.js"]
+
+[mcp_servers.remote-docs]
+url = "https://mcp.example.invalid"
+
+[features]
+multi_agent = true
+goals = false

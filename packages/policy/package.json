@@ -1,0 +1,13 @@
+{
+  "name": "@csn/policy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Policy schema, defaults, loading and enforcement helpers (scan scope, sharing gates, execution limits).",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@csn/core": "*"
+  }
+}
