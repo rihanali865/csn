@@ -135,10 +135,14 @@ export function parseFrontmatter(text: string): Record<string, string> {
   if (end === -1) return result;
   const block = text.slice(4, end);
   for (const rawLine of block.split(/\r?\n/)) {
-    if (!rawLine.trim() || rawLine.trim().startsWith('#')) continue;
-    const commentIdx = rawLine.indexOf(' #');
-    const line = commentIdx > 0 ? rawLine.slice(0, commentIdx) : rawLine;
-    const match = line.match(/^([A-Za-z0-9_.\-]+)\s*:\s*(.*)$/);
+    // CRLF machines: the final frontmatter line can arrive with a trailing \r
+    // (its \n is excluded from the block). `.` in the key/value regex does not
+    // match \r, so that line would silently fail to parse. Normalize it here.
+    const line = rawLine.endsWith('\r') ? rawLine.slice(0, -1) : rawLine;
+    if (!line.trim() || line.trim().startsWith('#')) continue;
+    const commentIdx = line.indexOf(' #');
+    const valueLine = commentIdx > 0 ? line.slice(0, commentIdx) : line;
+    const match = valueLine.match(/^([A-Za-z0-9_.\-]+)\s*:\s*(.*)$/);
     if (!match) continue;
     const [, key, valueRaw] = match;
     const value = valueRaw.trim().replace(/^["']|["']$/g, '');

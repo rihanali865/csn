@@ -31,6 +31,11 @@ describe('jsonc / frontmatter / toml parsing', () => {
     expect(meta).toEqual({ description: 'Reviews code', mode: 'subagent', license: 'MIT' });
   });
 
+  it('parses frontmatter identically when a Windows checkout produced CRLF', () => {
+    const crlf = '---\r\nname: video-editing\r\ndescription: Cut, polish and QC video edits with ffmpeg and Remotion\r\nlicense: MIT\r\n---\nbody';
+    expect(parseFrontmatter(crlf)).toEqual({ name: 'video-editing', description: 'Cut, polish and QC video edits with ffmpeg and Remotion', license: 'MIT' });
+  });
+
   it('parseFrontmatter tolerates non-frontmatter files', () => {
     expect(parseFrontmatter('# Just docs\nkey: value')).toEqual({});
   });

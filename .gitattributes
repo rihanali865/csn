@@ -1,0 +1,18 @@
+# Normalize line endings for developers and CI alike.
+* text=auto
+
+# Windows shell scripts must keep CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# These must stay LF on every platform
+*.sh text eol=lf
+*.mjs text eol=lf
+
+# Deterministic audit pipeline: fixture bytes are committed exactly as-is.
+# CI (autocrlf=true on Windows runners) checked out CRLF versions and the
+# frontmatter of SKILL.md fixtures parsed differently than on dev machines.
+tests/fixtures/** -text
+
+# Keep lockfiles byte-stable
+package-lock.json -text
