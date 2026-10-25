@@ -27,20 +27,13 @@ Design north star: *a report with receipts, or silence.* Every claim in a CSN ou
                           │ · idempotent intake       │
                           │ · rate limits             │
                           │ · scheduled task delivery │
-                          └────────────┬──────────────┘
-                                       ▼
-                          ┌───────────────────────────┐
-                          │ master agent (private)    │
-                          │ intake → compare → score  │
-                          │ → detached validation →   │
-                          │ proposal → human gate     │
                           └───────────────────────────┘
 ```
 
 ## What it is not
 
 - **Not a hidden monitor.** CSN never runs in the background, never schedules anything by default, and never reads a project it wasn't explicitly granted. Builds started something without your knowledge? That is *out of scope by design* — see [the consent boundary](docs/threat-model.md#the-hard-boundary).
-- **Not a capability marketplace of promises.** A community report's "verified" is a *self-claim* until the validation stage of the Master Agent reproduces it locally under a separately-gated execution policy.
+- **Not a capability marketplace of promises.** A community report's "verified" is a *self-claim* until it is reproduced locally under an explicitly consented, allowlisted, resource-capped execution policy.
 - **Not a telemetry service.** The default network URL list is empty. Sharing is `disabled` unless you edit `~/.config/csn/policy.json` by hand.
 
 ## Quick start
@@ -73,8 +66,8 @@ Every capability record carries one of four statuses:
 | --- | --- | --- |
 | `declared` | someone (or a doc page) says it exists | anything, including the network |
 | `configured` | a config file parses and names it, key parts exist on disk | local adapters only |
-| `tested` | an *explicitly consented, allowlisted, resource-capped local check* ran and passed | master agent validation only |
-| `failed` | that same kind of check ran and did not pass | master agent validation only |
+| `tested` | an *explicitly consented, allowlisted, resource-capped local check* ran and passed | a separately-gated validation stage only |
+| `failed` | that same kind of check ran and did not pass | a separately-gated validation stage only |
 
 Adapters can never emit `tested`/`failed` — the confidence math is derived deterministically from evidence and the transition machine refuses skips. This is why "detection ≠ execution" appears everywhere in the codebase.
 
@@ -90,7 +83,6 @@ Adapters can never emit `tested`/`failed` — the confidence math is derived det
 | `packages/policy` | the consent file (`policy.json`), all gating functions |
 | `packages/reports` | sanitized submissions, markdown rendering |
 | `services/api` | network API: hashed scoped tokens, idempotent intake, rate limits, task delivery |
-| `services/master-agent` | private pipeline: intake → compare → score → detached validation → proposal → integrate/rollback |
 | `apps/cli` | the `csn` command: audit / gaps / policy / submit / tasks |
 | `apps/dashboard` | local-only HTML dashboard (no JS, CSP `script-src 'none'`) |
 | `docs/` | architecture, threat model, privacy model, permissions, roadmap |
@@ -99,7 +91,7 @@ Adapters can never emit `tested`/`failed` — the confidence math is derived det
 
 - The **cursor adapter is `docs-unverified`**: Cursor's MCP documentation page could not be reached during development; detection there is layout-based with explicit disclosure in every audit.
 - The API is a **single-node deployment** store (JSON file with atomic swap). Rate limiting is in-process. A federated/DB backend is on the roadmap.
-- Configured *commands are never executed* during audits — only resolvability is checked (`where`/`which`). Executive checks happen solely in the master agent's detached-validation stage, behind BOTH a policy switch AND an explicit command allowlist.
+- Configured *commands are never executed* during audits — only resolvability is checked (`where`/`which`). Executive checks can only ever run behind BOTH a policy switch AND an explicit command allowlist, in a separately-gated validation stage — never inside an audit.
 - No OpenAI/Anthropic/etc. adapter yet. Adding an environment = implement `EnvironmentAdapter` + tests + fixture.
 
 ## The consent surface (one file)
@@ -113,8 +105,7 @@ Adapters can never emit `tested`/`failed` — the confidence math is derived det
   "privacy": { "redactEmails": true, "minimizePaths": true, "allowDescriptionCapture": true },
   "sharing": { "mode": "disabled", "allowProjectSummaries": false },
   "schedule": { "enabled": false },
-  "exec": { "allow": false, "allowedCommandPrefixes": [], "timeoutMs": 60000 },
-  "masterAgent": { "requireManualConfirmForIntegration": true, "maxCandidatesTracked": 100 }
+  "exec": { "allow": false, "allowedCommandPrefixes": [], "timeoutMs": 60000 }
 }
 ```
 
